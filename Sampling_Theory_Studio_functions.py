@@ -27,14 +27,49 @@ snr_value = 50
 #__________Main Functions_______#
 
 #Continue 
-def produce_Noise_signal(SNR):
+def generate_noisy_signal(snr_level):
     
-    noise = np.random.normal(0,1,1000)
-    return noise  
-
+    #Generates a noisy signal with a controllable SNR level.
+    
+    #Args:
+     #   snr_level (float): The desired SNR level in dB.
+    #Returns:
+      #noisy_signal (ndarray): The generated noisy signal.
+      
+ 
+      
+    temp_signal = Final_signal_sum 
+    signal_mean = np.mean(temp_signal)
+     
+    
+    # Generate the signal
+   # time = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+    
+    
+    # Calculate the power of the signal
+    signal_power = np.sum((temp_signal-signal_mean) ** 2) / len(temp_signal)
+    
+    # Calculate the noise power based on the desired SNR level
+    linear_ratio = 10 ** (snr_level / 10)  # Convert dB to power ratio
+    noise_power = signal_power / linear_ratio 
+    
+    # Generate white noise with the same length as the signal
+    noise = np.random.normal(0,np.sqrt(noise_power), size=len(temp_signal))
+    
   
-  #This function 
+    return noise
+  
+ 
 def generateFinalSignal(noise_flag,signal_uploaded_browser,SNR=40):
+    """
+    This function checks if there is an uploaded signal from browser and checks if there is added
+    noise, it then adds all signals (mixer,browser,noise) and generates a final signal.
+    
+    noise_flag:bool check if there is noise added
+    signal_uploaded_browser: uploaded signal from browser
+    SNR: Signal-to-noise ratio
+    """
+    
     global Final_signal_sum
     
     if signal_uploaded_browser is not None:
@@ -49,7 +84,7 @@ def generateFinalSignal(noise_flag,signal_uploaded_browser,SNR=40):
     
     
     if noise_flag:
-        Final_signal_sum = temp_final_signal + produce_Noise_signal(SNR)   
+        Final_signal_sum = temp_final_signal + generate_noisy_signal(SNR)   
     
     else:
         Final_signal_sum = temp_final_signal
@@ -61,8 +96,39 @@ def generateFinalSignal(noise_flag,signal_uploaded_browser,SNR=40):
 
 
 
+def addSignalToList(amplitude, frequency, phase):
+    """
+    Add signals to added_list
+    :param amplitude: the amplitude of the signal
+    :param frequency: the frequency of the signal
+    :param phase: the phase of the signal
+    """
+    global max_frequency
+    signal = Signal(amplitude=amplitude, frequency=frequency, phase=phase)
+    total_signals_list.append(signal)
+    max_frequency = max(max_frequency, signal.frequency)
 
 
+def removeSignalFromList(amplitude, frequency, phase):
+    
+    """
+    remove signals from added_list
+    Parameters
+    ----------
+    amplitude : float
+    the amplitude of the signal
+    frequency : float
+    the frequancy of the signal
+    phase : float
+    the phase of the signal
+    """
 
+    for i in range(len(total_signals_list)):
+        if total_signals_list[i].amplitude == amplitude and total_signals_list[i].frequency == frequency and total_signals_list[i].phase == phase:
+            total_signals_list.pop(i)
+            break
+
+    #if max_frequency == frequency:
+     #   reset_maximum_frequency()
 
 
