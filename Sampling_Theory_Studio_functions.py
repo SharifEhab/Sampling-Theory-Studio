@@ -93,7 +93,95 @@ def generateFinalSignal(noise_flag,signal_uploaded_browser,SNR=40):
     return pd.DataFrame(Final_signal_sum,signal_default_time)
 
 
+def interpolate(time_new, signal_time, signal_amplitude):
+    """
+        Sinc Interpolation
+        Parameters
+        ----------
+        time_new : array of float
+            new time to smple at
+        signal_time : array of float
+            samples of time
+        signal_amplitude : array of float
+            amplitudes at signal_time 
+        Return
+        ----------
+        new_Amplitude : array of float
+            new amplitudes at time_new
+            
+        ## Interpolation using the whittaker-shannon interpolation formula that sums shifted and weighted sinc functions to give the interpolated signal
+        ## Each sample corresponds to a sinc function centered at the sample and weighted by the sample amplitude
+        ## summing all these sinc functions gives us the interploated signal     
+    """
 
+     
+
+   
+    sincMatrix = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:, np.newaxis], (1, len(time_new)))
+  
+    # sinc interpolation 
+    signal_interpolated = np.dot(signal_amplitude, np.sinc(sincMatrix/(signal_time[1] - signal_time[0])))   
+    return signal_interpolated
+
+
+
+def renderSampledSignal(nyquist_rate, normalized_sample_flag):
+    """
+        render sampled and interpolated signal
+        Parameters
+        ----------
+        nyquist_rate : float
+            F_sample/max_frequency
+        Return
+        ----------
+        fig : Figure
+            plot of the interpolated sampled signal
+        downloaded_df : Dataframe
+            the resulted signal to be downloaded
+    """
+    global max_frequency
+    
+    
+    if normalized_sample_flag:
+
+        time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate*max_frequency))
+    else:
+        time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate))
+
+    ynew = interpolate(time, signal_default_time, Final_signal_sum )
+
+    y_inter = interpolate(signal_default_time, time, ynew)
+    df = pd.DataFrame(signal_default_time, y_inter)
+
+ # Original signal with markers for sampled points
+    fig1 = px.scatter(x=signal_default_time, y=Final_signal_sum , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig1['data'][0]['showlegend'] = True
+    fig1['data'][0]['name'] = 'Original Signal'
+    fig1.add_scatter(name="Samples", x=signal_default_time, y=y_inter, mode='markers', marker=dict(color="#FF4B4B", size=10))
+    fig1.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
+    fig1.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    fig1.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+
+    # Reconstructed signal
+    fig2 = px.line(x=signal_default_time, y=y_inter, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig2.add_scatter(name="Signal", x=signal_default_time, y=Final_signal_sum , line_color='blue')
+    fig2.add_scatter(name='Generated Signal', x=signal_default_time, y=generate_sine_signal, line_color='yellow', visible="legendonly")
+    fig2.update_traces(line_width=2)
+    fig2.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
+    fig2.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    fig2.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+
+    # Difference between original and reconstructed signal
+    fig3 = px.line(x=signal_default_time, y=Final_signal_sum -y_inter, labels={"x": "Time (s)", "y": "Amplitude Difference (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig3.update_traces(line_width=2, line_color='red')
+    fig3.update_layout(showlegend=False, margin=dict(l=0, r=0, t=0, b=0))
+    fig3.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    fig3.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+
+    return fig1, fig2, fig3,df.drop(df.columns[[0]], axis=1)
+
+
+renderSampledSignal(2.0, False)
 
 
 def addSignalToList(amplitude, frequency, phase):
@@ -128,7 +216,50 @@ def removeSignalFromList(amplitude, frequency, phase):
             total_signals_list.pop(i)
             break
 
-    #if max_frequency == frequency:
-     #   reset_maximum_frequency()
+    if max_frequency == frequency:
+        SetmaxFreq()
 
 
+def sinGeneration(amplitude, Freq, phase):
+    global generate_sine_signal
+    generate_sine_signal=np.sin(2*np.pi*(signal_default_time*Freq)+phase*np.pi)*amplitude
+    
+
+
+def SetmaxFreq(): #set the maximum freq where loops on the signal stored by the user and select the max frequency uploaded by the user
+    findMaxFreq=1,
+    global max_frequency
+    for signals in total_signals_list:
+        findMaxFreq=max(findMaxFreq,signals.frequency) 
+
+    max_frequency= findMaxFreq    
+
+
+def get_Total_signal_list():
+    return total_signals_list
+
+
+def set_snr_level(snr_level):
+    global snr_value
+    snr_value = snr_level
+
+
+def get_snr_level():
+    global snr_value
+    return snr_value 
+
+def Reintialize_values():
+    global signal_default_time, max_frequency
+    signal_default_time = np.arrange(0,1,0.001)    #1000 default samples for the time axis   
+    max_frequency = 1
+    
+    for signals in  total_signals_list : 
+        if signals.frequency > max_frequency:
+            max_frequency = signals.frequency
+        
+
+
+#def SignalListClean():
+ #   global max_frequency
+  #  max_frequency=1
+   # total_signals_list.clear()
