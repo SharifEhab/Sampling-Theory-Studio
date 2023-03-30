@@ -27,6 +27,12 @@ snr_value = 50
 
 #__________Main Functions_______#
 
+def setSignalTime(Fs):
+    global default_signal_time, f_max
+    default_signal_time = np.arange(0, 1000*1/Fs, 1/Fs)
+    f_max = Fs/14
+
+
 #Continue 
 def generate_noisy_signal(snr_level):
     
