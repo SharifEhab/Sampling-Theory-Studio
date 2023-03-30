@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from Signal_Class import Signal
 import plotly.express as px
+import streamlit as st
 
 
 #________Initializing variables_______#
@@ -200,10 +201,13 @@ def addSignalToList(amplitude, frequency, phase):
     :param frequency: the frequency of the signal
     :param phase: the phase of the signal
     """
+   
+    
     global max_frequency
     signal = Signal(amplitude=amplitude, frequency=frequency, phase=phase)
     total_signals_list.append(signal)
     max_frequency = max(max_frequency, signal.frequency)
+
 
 
 def removeSignalFromList(amplitude, frequency, phase):
@@ -259,7 +263,7 @@ def get_snr_level():
 
 def Reintialize_values():
     global signal_default_time, max_frequency
-    signal_default_time = np.arrange(0,1,0.001)    #1000 default samples for the time axis   
+    signal_default_time = np.arange(0,1,0.001)    #1000 default samples for the time axis   
     max_frequency = 1
     
     for signals in  total_signals_list : 
@@ -268,7 +272,7 @@ def Reintialize_values():
         
 
 
-#def SignalListClean():
- #   global max_frequency
-  #  max_frequency=1
-   # total_signals_list.clear()
+def SignalListClean():
+   global max_frequency
+   max_frequency=1
+   total_signals_list.clear()

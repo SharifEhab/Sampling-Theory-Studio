@@ -4,6 +4,7 @@ import pandas as pd        # Pandas library for data manipulation and analysis
 import numpy as np         # NumPy library for numerical computing
 import matplotlib.pyplot as plt  # Matplotlib library for data visualization
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk  # Matplotlib toolbar for interactive plots
+import Sampling_Theory_Studio_functions
 
 st.set_page_config(page_title="Sample", page_icon=":radio:", layout="wide")
 
@@ -35,9 +36,62 @@ with st.sidebar:
         sample_freq = st.slider("Sample Frequency (fmax)", 1, 4, 2)
 
 # Main code
+st.markdown("---")
 with st.container():
-    st.write("---")
-    uploaded_files = st.file_uploader("Upload a Signal", type=['csv'], accept_multiple_files=True)
+    # create two columns for the containers
+    left_col1, left_col2, right_col = st.columns([1, 1, 2])
+    
+    
+    with left_col1:
+     
+     uploaded_files = st.file_uploader("Upload a Signal", type=['csv'], accept_multiple_files=True)
+
+# code for the right container
+    with right_col:
+        st.write("ADD SIGNAL", text_align="right", font="bold")
+        
+        signal_frequency_slider_col, signal_amplitude_slider_col = st.columns(2)
+        
+        signal_frequancy_slider = signal_frequency_slider_col.slider(
+            'Frequency', 0.5, 20.0, 10.0, 0.1, format="%f")
+
+        signal_amplitude_slider = signal_amplitude_slider_col.slider(
+            'Amplitude', 0.1, 1.0, 0.1, 0.01, format="%f")
+
+        signal_phase_slider = st.slider(
+            'Phase', 0.0, 2.0, 0.0, 0.1, format="%fπ")
+
+        add_signal_button = st.button("Add Signal", key="add_signal_button")
+        if add_signal_button:
+            
+            Sampling_Theory_Studio_functions.addSignalToList(signal_amplitude_slider, signal_frequancy_slider, signal_phase_slider)
+        selectbox_signals_list = []
+        for signal in Sampling_Theory_Studio_functions.get_Total_signal_list():
+            selectbox_signals_list.append(
+                f"Amp: {signal.amplitude:n} / Freq: {signal.frequency:n} / Phase: {signal.phase :n} π")
+        selected_signal = st.selectbox("Signals", selectbox_signals_list)
+        selected_signal_split = str(selected_signal).split(" ")
+        if len(selected_signal_split) != 1:
+            amplitude_slider = float(selected_signal_split[1])
+            frequency_slider = float(selected_signal_split[4])
+            phase_slider = float(selected_signal_split[7])
+        remove_button_col, clear_button_col = st.columns(2)
+        with remove_button_col:
+            remove_signal_button = st.button("Remove", key="remove_button", disabled=len(
+                Sampling_Theory_Studio_functions.get_Total_signal_list()) <= 0)
+            if remove_signal_button:
+                Sampling_Theory_Studio_functions.removeSignalFromList(
+                    amplitude=amplitude_slider, frequency=frequency_slider, phase=phase_slider)
+                st.experimental_rerun()
+
+        with clear_button_col:
+            clear_signals_button = st.button("Clear", key="clear_button", disabled=len(
+                Sampling_Theory_Studio_functions.get_Total_signal_list()) <= 0)
+            if clear_signals_button:
+                Sampling_Theory_Studio_functions.Reintialize_values()
+                Sampling_Theory_Studio_functions.SignalListClean()
+                st.experimental_rerun()
+ 
     if uploaded_files:
         st.markdown("---")
         for uploaded_file in uploaded_files:
