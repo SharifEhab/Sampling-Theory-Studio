@@ -5,7 +5,7 @@ import plotly.express as px
 
 
 #________Initializing variables_______#
-signal_default_time = np.arrange(0,1,0.001)    #1000 default samples for the time axis   
+signal_default_time = np.arange(0,1,0.001)    #1000 default samples for the time axis   
 
 
 signal_default_values = np.zeros(len(signal_default_time))    
@@ -110,22 +110,24 @@ def interpolate(time_new, signal_time, signal_amplitude):
             new amplitudes at time_new
             
         ## Interpolation using the whittaker-shannon interpolation formula that sums shifted and weighted sinc functions to give the interpolated signal
-        ## Each sample corresponds to a sinc function centered at the sample and weighted by the sample amplitude
-        ## summing all these sinc functions gives us the interploated signal     
+        ## Each sample in original signal corresponds to a sinc function centered at the sample and weighted by the sample amplitude
+        ## summing all these sinc functions at the new time array points gives us the interploated signal at these points.     
     """
 
-     
 
-   
+    # sincM is a 2D matrix of shape (len(signal_time), len(time_new))
+    # By subtracting the sampled time points from the interpolated time points
+    
     sincMatrix = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:, np.newaxis], (1, len(time_new)))
   
     # sinc interpolation 
+    #This dot product results in a new set of amplitude values that approximate the original signal at the interpolated time points.
     signal_interpolated = np.dot(signal_amplitude, np.sinc(sincMatrix/(signal_time[1] - signal_time[0])))   
     return signal_interpolated
 
 
 
-def renderSampledSignal(nyquist_rate, normalized_sample_flag):
+def renderSampledSignal(nyquist_rate, is_normalized_freq):
     """
         render sampled and interpolated signal
         Parameters
@@ -142,46 +144,53 @@ def renderSampledSignal(nyquist_rate, normalized_sample_flag):
     global max_frequency
     
     
-    if normalized_sample_flag:
+    if is_normalized_freq:
 
-        time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate*max_frequency))
+        time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate*max_frequency))  
     else:
         time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate))
 
-    ynew = interpolate(time, signal_default_time, Final_signal_sum )
+    y_samples = interpolate(time, signal_default_time, Final_signal_sum )  #sampling/samples taken with input sampling frequency
 
-    y_inter = interpolate(signal_default_time, time, ynew)
-    df = pd.DataFrame(signal_default_time, y_inter)
+    y_interpolated = interpolate(signal_default_time, time, y_samples)   # interploated signal or reconstructed signal
+    df = pd.DataFrame(signal_default_time, y_interpolated)
 
  # Original signal with markers for sampled points
-    fig1 = px.scatter(x=signal_default_time, y=Final_signal_sum , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig1 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
     fig1['data'][0]['showlegend'] = True
-    fig1['data'][0]['name'] = 'Original Signal'
-    fig1.add_scatter(name="Samples", x=signal_default_time, y=y_inter, mode='markers', marker=dict(color="#FF4B4B", size=10))
+    fig1['data'][0]['name'] = ' Samples '
+    fig1.add_scatter(name="Original_Signal", x=signal_default_time, y=Final_signal_sum,line_color = 'blue' )
+    fig1.update_traces(marker={'size': 10})
     fig1.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
     fig1.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
     fig1.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
-    # Reconstructed signal
-    fig2 = px.line(x=signal_default_time, y=y_inter, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
-    fig2.add_scatter(name="Signal", x=signal_default_time, y=Final_signal_sum , line_color='blue')
-    fig2.add_scatter(name='Generated Signal', x=signal_default_time, y=generate_sine_signal, line_color='yellow', visible="legendonly")
-    fig2.update_traces(line_width=2)
+    # Reconstructed signal along with sampling points/markers
+    fig2 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig2['data'][0]['showlegend'] = True
+    fig2['data'][0]['name'] = ' Samples '
+    fig2.add_scatter(name="Reconstructed",x=signal_default_time, y=y_interpolated,  line_color="#FF4B4B")
+    fig2.update_traces(marker={'size': 10}, line_color="#FF4B4B")
     fig2.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
     fig2.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
     fig2.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
     # Difference between original and reconstructed signal
-    fig3 = px.line(x=signal_default_time, y=Final_signal_sum -y_inter, labels={"x": "Time (s)", "y": "Amplitude Difference (mv)"}, color_discrete_sequence=['#FAFAFA'])
-    fig3.update_traces(line_width=2, line_color='red')
-    fig3.update_layout(showlegend=False, margin=dict(l=0, r=0, t=0, b=0))
+    fig3 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig3['data'][0]['showlegend'] = True
+    fig3['data'][0]['name'] = ' Samples '
+    fig3.add_scatter(name="Reconstructed",x=signal_default_time, y=y_interpolated,line_color="#FF4B4B")
+    fig3.update_traces(marker={'size': 10}, line_color="#FF4B4B")
+    fig3.add_scatter(name="Original_Signal",x =signal_default_time,y =Final_signal_sum, line_color='blue' )
+    fig3.update_traces(marker={'size': 10})
+    fig3.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
     fig3.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
     fig3.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
-    return fig1, fig2, fig3,df.drop(df.columns[[0]], axis=1)
+    return fig1, fig2, fig3,df.drop(df.columns[[0]], axis=1)  # returns 3 figs along with interpolated signal values where each row corresponds to interpolated signal value at specific time point.
 
 
-renderSampledSignal(2.0, False)
+
 
 
 def addSignalToList(amplitude, frequency, phase):
