@@ -101,12 +101,17 @@ with st.sidebar:
 
 # HEADER SECTION
 with st.container():
-    st.title("Task 2 – Sampling-Theory Studio")
-    functions.sinGeneration(amplitude_slider,frequency_slider,phase_slider)
-    functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level)
-    fig1,fig2,fig3,reconstructed_signal = functions.renderSampledSignal(sample_rate,is_normalized)
+    if len(functions.get_Total_signal_list()) == 1 and file is  None:
+        st.title("Please upload signal or add using the signal mixer")
+        
+    else:    
     
-    st.plotly_chart(fig1,use_container_width=True)
-    st.plotly_chart(fig2,use_container_width=True)
-    st.plotly_chart(fig3,use_container_width=True)
+        st.title("Task 2 – Sampling-Theory Studio")
+        functions.sinGeneration(amplitude_slider,frequency_slider,phase_slider)
+        functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level)
+        fig1,fig2,fig3,reconstructed_signal = functions.renderSampledSignal(sample_rate,is_normalized)
+        
+        st.plotly_chart(fig1,use_container_width=True)
+        st.plotly_chart(fig2,use_container_width=True)
+        st.plotly_chart(fig3,use_container_width=True)
     
