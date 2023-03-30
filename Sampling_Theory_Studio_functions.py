@@ -224,10 +224,9 @@ def removeSignalFromList(amplitude, frequency, phase):
     the phase of the signal
     """
 
-    for i in range(len(total_signals_list)):
-        if total_signals_list[i].amplitude == amplitude and total_signals_list[i].frequency == frequency and total_signals_list[i].phase == phase:
-            total_signals_list.pop(i)
-            break
+    for signals in total_signals_list:
+        if signals.amplitude==amplitude and signals.frequency == frequency and signals.phase == phase:
+            total_signals_list.remove(signals)        
 
     if max_frequency == frequency:
         SetmaxFreq()
@@ -276,3 +275,8 @@ def SignalListClean():
    global max_frequency
    max_frequency=1
    total_signals_list.clear()
+   
+def signal_time():
+   global signal_default_time, max_frequency
+   
+       
