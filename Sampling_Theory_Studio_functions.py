@@ -5,7 +5,7 @@ import plotly.express as px
 import streamlit as st
 
 
-#________Initializing variables_______#
+#___Initializing variables__#
 signal_default_time = np.arange(0,1,0.001)    #1000 default samples for the time axis   
 
 
@@ -25,7 +25,7 @@ snr_value = 50
 
 
 
-#__________Main Functions_______#
+#___Main Functions__#
 
 
 
@@ -151,9 +151,11 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     if is_normalized_freq:
 
        # time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate*max_frequency))  
-        time = np.arange(0, signal_default_time[-1], max_frequency/nyquist_rate)   
+        time = np.arange(0, signal_default_time[-1], 1/(max_frequency*nyquist_rate))
+
     else:
         time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate))
+        st.write(time)
     
      
     y_samples = interpolate(time, signal_default_time, Final_signal_sum )  #sampling/samples taken with input sampling frequency
@@ -162,7 +164,7 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     df = pd.DataFrame(signal_default_time, y_interpolated)
 
  # Original signal with markers for sampled points
-    fig1 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig1 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
     fig1['data'][0]['showlegend'] = True
     fig1['data'][0]['name'] = ' Samples '
     fig1.add_scatter(name="Original_Signal", x=signal_default_time, y=Final_signal_sum,line_color = 'blue' )
@@ -172,7 +174,7 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     fig1.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
     # Reconstructed signal along with sampling points/markers
-    fig2 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig2 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
     fig2['data'][0]['showlegend'] = True
     fig2['data'][0]['name'] = ' Samples '
     fig2.add_scatter(name="Reconstructed",x=signal_default_time, y=y_interpolated,  line_color="#FF4B4B")
@@ -182,7 +184,7 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     fig2.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
     # Difference between original and reconstructed signal
-    fig3 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['#FAFAFA'])
+    fig3 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
     fig3['data'][0]['showlegend'] = True
     fig3['data'][0]['name'] = ' Samples '
     fig3.add_scatter(name="Reconstructed",x=signal_default_time, y=y_interpolated,line_color="#FF4B4B")
@@ -211,7 +213,7 @@ def addSignalToList(amplitude, frequency, phase):
     global max_frequency
     signal = Signal(amplitude=amplitude, frequency=frequency, phase=phase)
     total_signals_list.append(signal)
-    max_frequency = max(max_frequency, signal.frequency)
+    max_frequency = float(max(max_frequency, signal.frequency))
 
 
 
@@ -244,12 +246,13 @@ def sinGeneration(amplitude, Freq, phase):
 
 
 def SetmaxFreq(): #set the maximum freq where loops on the signal stored by the user and select the max frequency uploaded by the user
-    findMaxFreq=1,
+    findMaxFreq = 1
     global max_frequency
     for signals in total_signals_list:
-        findMaxFreq=max(findMaxFreq,signals.frequency) 
+        findMaxFreq = max(findMaxFreq ,signals.frequency )
+             
 
-    max_frequency= findMaxFreq    
+    max_frequency= float(findMaxFreq)
 
 
 def get_Total_signal_list():
@@ -272,18 +275,16 @@ def Reintialize_values():
     
     for signals in  total_signals_list : 
         if signals.frequency > max_frequency:
-            max_frequency = signals.frequency
+            max_frequency = float(signals.frequency)
         
 
 
 def SignalListClean():
    global max_frequency
-   max_frequency=1
+   max_frequency=1.0
    total_signals_list.clear()
    
 def signal_set_time(array_time,F_sample):
     global signal_default_time,max_frequency
     signal_default_time = array_time.copy()
-    max_frequency = F_sample/2
-    
-       
+    max_frequency = float(F_sample/2)

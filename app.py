@@ -7,7 +7,7 @@ import csv
 import random
 st.set_page_config(page_title="Sample", page_icon=":radio:", layout="wide")
 
-# ___________ Elements styling ___________ #
+# ____ Elements styling ____ #
 
 with open('style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
@@ -20,7 +20,7 @@ def read_csv_file(file):
     else:
         return None
 
-#____________Variables____________#
+#_____Variables_____#
 dropdown_signal_list = []
 file_signal_amplitude = None
 
@@ -34,7 +34,7 @@ with st.sidebar:
         signal = read_csv_file(file)
         file_signal_amplitude =np.asarray( signal['Amplitude'])
         file_signal_time = np.asarray(signal['Time'])
-        Fs =1/(file_signal_time[1]-file_signal_time[0])   #get the sampling frequency considering the time samples are equidistant
+        Fs =float(1/(file_signal_time[1]-file_signal_time[0]) )  #get the sampling frequency considering the time samples are equidistant
         functions.signal_set_time(file_signal_time,Fs)
     else:
         functions.Reintialize_values()
@@ -57,7 +57,7 @@ with st.sidebar:
     with phase_slider_col:
         phase_slider = st.slider('Phase', 0.0, 2.0, 0.0, 0.1, format="%fπ")
     
-    frequency_slider = st.slider("Frequency", 0.5, 20.0, 10.0, 0.1, format="%f")
+    frequency_slider = st.slider("Frequency", 1.0, 20.0, 10.0, 0.1, format="%f")
 
     AddSignalButton=st.button("Add Signal",key="addbutton")
     
@@ -99,12 +99,13 @@ with st.sidebar:
     st.header("Sampling")
     is_normalized = st.checkbox("Normalized",False)
     if is_normalized:
-        sample_rate = st.slider("Sampling rate Fs/Fmax", 0.1, 4.0, 1.0, 0.1, format="%f")
+        st.write(functions.max_frequency)
+        sample_rate = st.slider("Sampling rate Fs/Fmax", 1.5, 4.0, 1.5, 0.1, format="%f")
     else:
         st.write(functions.max_frequency)
-        sample_rate = st.slider("Fs",max(1.5,ceil(functions.max_frequency*0.5)*1.0),4.0*functions.max_frequency,1.5*functions.max_frequency,0.5,format="%f")
+        sample_rate = st.slider("Fs",max(1.5,ceil(float(functions.max_frequency)*0.5)*1.0),4.0*float(functions.max_frequency),1.5*float(functions.max_frequency),0.5,format="%f")
       
-"""
+
 # HEADER SECTION
 with st.container():
     if len(functions.get_Total_signal_list()) == 0 and file is  None:
@@ -120,4 +121,3 @@ with st.container():
         st.plotly_chart(fig1,use_container_width=True)
         st.plotly_chart(fig2,use_container_width=True)
         st.plotly_chart(fig3,use_container_width=True)
-"""
