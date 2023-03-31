@@ -34,8 +34,9 @@ with st.sidebar:
         signal = read_csv_file(file)
         file_signal_amplitude =np.asarray( signal['Amplitude'])
         file_signal_time = np.asarray(signal['Time'])
-        Fs =float(1/(file_signal_time[1]-file_signal_time[0]) )  #get the sampling frequency considering the time samples are equidistant
-        functions.signal_set_time(file_signal_time,Fs)
+        max_frequency = functions.calculate_max_freq_uploadedfile(file_signal_amplitude,file_signal_time)
+        #Fs =float(1/(file_signal_time[1]-file_signal_time[0]) )  #get the sampling frequency considering the time samples are equidistant
+        functions.signal_set_time(file_signal_time,max_frequency*2)
     else:
         functions.Reintialize_values()
             
@@ -104,9 +105,11 @@ with st.sidebar:
     else:
         st.write(functions.max_frequency)
         sample_rate = st.slider("Fs",max(1.5,ceil(float(functions.max_frequency)*0.5)*1.0),4.0*float(functions.max_frequency),1.5*float(functions.max_frequency),0.5,format="%f")
-      
-
-# HEADER SECTION
+    st.write(functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level))  
+    
+    functions.download_final_signal(functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level))
+    
+    
 with st.container():
     if len(functions.get_Total_signal_list()) == 0 and file is  None:
         st.title("Please upload signal or add using the signal mixer")
@@ -121,3 +124,5 @@ with st.container():
         st.plotly_chart(fig1,use_container_width=True)
         st.plotly_chart(fig2,use_container_width=True)
         st.plotly_chart(fig3,use_container_width=True)
+        
+        

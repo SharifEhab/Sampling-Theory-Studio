@@ -3,6 +3,8 @@ import pandas as pd
 from Signal_Class import Signal
 import plotly.express as px
 import streamlit as st
+import base64
+from scipy.fftpack import fft
 
 
 #___Initializing variables__#
@@ -93,8 +95,9 @@ def generateFinalSignal(noise_flag,signal_uploaded_browser,SNR=40):
     else:
         Final_signal_sum = temp_final_signal
       
-    
-    return pd.DataFrame(Final_signal_sum,signal_default_time)
+    Final_signal_data={'Time':signal_default_time, 'Amplitude':Final_signal_sum}
+    Final_sig_dataframe = pd.DataFrame(Final_signal_data)
+    return Final_sig_dataframe
 
 
 def interpolate(time_new, signal_time, signal_amplitude):
@@ -288,3 +291,43 @@ def signal_set_time(array_time,F_sample):
     global signal_default_time,max_frequency
     signal_default_time = array_time.copy()
     max_frequency = float(F_sample/2)
+    
+
+
+
+def calculate_max_freq_uploadedfile(signal_amp,signal_time):
+    """
+    uses the Fast Fourier Transform (FFT) to find the frequency domain representation of the signal
+    
+    """
+    n = len(signal_time)  # Get number of samples in signal amp array
+    Fs = 1 / (signal_time[1] - signal_time[0]) #sampling frequency
+    signal_freq = fft(signal_amp) / n  #Apply FFT to sig_amp results in array of complex values representing amplitude and phase of each component 
+    freqs = np.linspace(0, Fs / 2, n // 2)  #array of frequencies based on Fs 
+    max_freq_index = np.argmax(np.abs(signal_freq[:n//2]))  #get index of highest magnitude in frequency components
+    max_freq = freqs[max_freq_index]  #Get the frequency corresponding to greatest magnitude
+    return max_freq    #Return max frequency
+
+
+
+
+def download_final_signal(data_frame) :
+    csv = data_frame.to_csv(index=False)   #convert pandas df to a csv string and removes indexing
+    b64 = base64.b64encode(csv.encode()).decode() 
+    """
+    Base64-encoded version of csv string
+     This is done by first encoding the csv string into bytes using the .encode() method, then using the b64encode() function from the base64 module to encode those bytes as Base64.
+
+The resulting Base64-encoded string is then decoded using the decode() method to get a regular string.
+
+This encoding and decoding is necessary for creating a URL-safe representation of the csv data, which can then be used in the href attribute of the download link.
+
+    """
+    
+    file_name = 'Downloaded_signal.csv'
+    data = f'data:file/csv;base64,{b64}' #create data url scheme
+    download_button_str = f'<a href="{data}" download={file_name}>Download CSV File</a>' #html string for the download button
+    st.markdown(download_button_str, unsafe_allow_html = True) #display button in app
+   #The unsafe_allow_html=True argument is needed because the download_button_str variable contains HTML code.
+     
+    
