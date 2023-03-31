@@ -27,10 +27,7 @@ snr_value = 50
 
 #__________Main Functions_______#
 
-def setSignalTime(Fs):
-    global default_signal_time, f_max
-    default_signal_time = np.arange(0, 1000*1/Fs, 1/Fs)
-    f_max = Fs/14
+
 
 
 #Continue 
@@ -153,10 +150,12 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     
     if is_normalized_freq:
 
-        time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate*max_frequency))  
+       # time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate*max_frequency))  
+        time = np.arange(0, signal_default_time[-1], max_frequency/nyquist_rate)   
     else:
         time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate))
-
+    
+     
     y_samples = interpolate(time, signal_default_time, Final_signal_sum )  #sampling/samples taken with input sampling frequency
 
     y_interpolated = interpolate(signal_default_time, time, y_samples)   # interploated signal or reconstructed signal
@@ -282,7 +281,9 @@ def SignalListClean():
    max_frequency=1
    total_signals_list.clear()
    
-def signal_time():
-   global signal_default_time, max_frequency
-   
+def signal_set_time(array_time,F_sample):
+    global signal_default_time,max_frequency
+    signal_default_time = array_time.copy()
+    max_frequency = F_sample/2
+    
        

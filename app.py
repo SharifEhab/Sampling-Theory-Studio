@@ -24,13 +24,18 @@ def read_csv_file(file):
 dropdown_signal_list = []
 file_signal_amplitude = None
 
+
+
 # SIDEBAR SECTION
 with st.sidebar:
     st.markdown('<h1 class="sidebar-title">Manage Signals</h1>', unsafe_allow_html=True)
     file = st.file_uploader("Choose a CSV file", type="csv")
     if file is not None:
         signal = read_csv_file(file)
-        file_signal_amplitude = signal['Amplitude'].values
+        file_signal_amplitude =np.asarray( signal['Amplitude'])
+        file_signal_time = np.asarray(signal['Time'])
+        Fs =1/(file_signal_time[1]-file_signal_time[0])   #get the sampling frequency considering the time samples are equidistant
+        functions.signal_set_time(file_signal_time,Fs)
     else:
         functions.Reintialize_values()
             
@@ -94,14 +99,15 @@ with st.sidebar:
     st.header("Sampling")
     is_normalized = st.checkbox("Normalized",False)
     if is_normalized:
-        sample_rate = st.slider("Sampling rate Fs/Fmax", 0.1, 6.0, 1.0, 0.1, format="%f")
+        sample_rate = st.slider("Sampling rate Fs/Fmax", 0.1, 4.0, 1.0, 0.1, format="%f")
     else:
-        sample_rate = st.slider("Fs",max(1.5,ceil(functions.max_frequency*0.5)*1.0),4.0*functions.max_frequency,1.0*functions.max_frequency,0.5,format="%f")
-        
-
+        st.write(functions.max_frequency)
+        sample_rate = st.slider("Fs",max(1.5,ceil(functions.max_frequency*0.5)*1.0),4.0*functions.max_frequency,1.5*functions.max_frequency,0.5,format="%f")
+      
+"""
 # HEADER SECTION
 with st.container():
-    if len(functions.get_Total_signal_list()) == 1 and file is  None:
+    if len(functions.get_Total_signal_list()) == 0 and file is  None:
         st.title("Please upload signal or add using the signal mixer")
         
     else:    
@@ -114,4 +120,4 @@ with st.container():
         st.plotly_chart(fig1,use_container_width=True)
         st.plotly_chart(fig2,use_container_width=True)
         st.plotly_chart(fig3,use_container_width=True)
-    
+"""
