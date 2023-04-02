@@ -73,7 +73,7 @@ with st.sidebar:
     if len(split_signals_to_strings) !=1:
         amp_slider = float(split_signals_to_strings[3])
         freq_slider = float(split_signals_to_strings[6])
-        ph_slider = float(split_signals_to_strings[9]) 
+        ph_slider = float(split_signals_to_strings[9])
       
         
     remove_col,clear_col = st.columns(2)
@@ -100,12 +100,12 @@ with st.sidebar:
     st.header("Sampling")
     is_normalized = st.checkbox("Normalized",False)
     if is_normalized:
-        st.write(functions.max_frequency)
+        #st.write(functions.max_frequency)
         sample_rate = st.slider("Sampling rate Fs/Fmax", 1.5, 4.0, 1.5, 0.1, format="%f")
     else:
-        st.write(functions.max_frequency)
+       # st.write(functions.max_frequency)
         sample_rate = st.slider("Fs",max(1.5,ceil(float(functions.max_frequency)*0.5)*1.0),4.0*float(functions.max_frequency),1.5*float(functions.max_frequency),0.5,format="%f")
-    st.write(functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level))  
+    #st.write(functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level))  
     
     functions.download_final_signal(functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level))
     
@@ -117,12 +117,10 @@ with st.container():
     else:    
     
         st.title("Task 2 – Sampling-Theory Studio")
-        functions.sinGeneration(amplitude_slider,frequency_slider,phase_slider)
+        functions.sinGeneration(amplitude_slider,frequency_slider,phase_slider)  # sine wave random 
         functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level)
         fig1,fig2,fig3,reconstructed_signal = functions.renderSampledSignal(sample_rate,is_normalized)
         
         st.plotly_chart(fig1,use_container_width=True)
         st.plotly_chart(fig2,use_container_width=True)
         st.plotly_chart(fig3,use_container_width=True)
-        
-        

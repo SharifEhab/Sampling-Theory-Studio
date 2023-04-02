@@ -86,7 +86,7 @@ def generateFinalSignal(noise_flag,signal_uploaded_browser,SNR=40):
               
     
     for signal in total_signals_list:      
-        temp_final_signal+=signal.amplitude*np.sin(signal.frequency*2*np.pi*signal_default_time + signal.phase* np.pi )
+        temp_final_signal+=signal.amplitude*np.cos(signal.frequency*2*np.pi*signal_default_time + signal.phase* np.pi )
     
     
     if noise_flag:
@@ -123,14 +123,16 @@ def interpolate(time_new, signal_time, signal_amplitude):
 
 
     # sincM is a 2D matrix of shape (len(signal_time), len(time_new))
+
     # By subtracting the sampled time points from the interpolated time points
     
     sincMatrix = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:, np.newaxis], (1, len(time_new)))
-  
+
     # sinc interpolation 
+    
     #This dot product results in a new set of amplitude values that approximate the original signal at the interpolated time points.
     signal_interpolated = np.dot(signal_amplitude, np.sinc(sincMatrix/(signal_time[1] - signal_time[0])))   
-    return signal_interpolated
+    return signal_interpolated              
 
 
 
@@ -153,16 +155,28 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     
     if is_normalized_freq:
 
-       # time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate*max_frequency))  
-        time = np.arange(0, signal_default_time[-1], 1/(max_frequency*nyquist_rate))
+        
+       time  = np.arange(0, signal_default_time[-1], 1/(nyquist_rate * max_frequency))
+    #    if nyquist_rate == 2:
+    #         tar=time.copy() 
+    #         for i in range(1, len(time)):
+    #             time[i]=tar[i]-((tar[i]-tar[i-1])/2)
 
+                
     else:
         time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate))
-        st.write(time)
+        # if nyquist_rate == 2*max_frequency: 
+        #     tar=time.copy() 
+        #     for i in range(1, len(time)):
+        #         time[i]=tar[i]-((tar[i]-tar[i-1])/2)
+
+
+
     
-     
+    # points on graph  , 20 , amp of sample 
     y_samples = interpolate(time, signal_default_time, Final_signal_sum )  #sampling/samples taken with input sampling frequency
 
+    # amp of reconstructed 
     y_interpolated = interpolate(signal_default_time, time, y_samples)   # interploated signal or reconstructed signal
     df = pd.DataFrame(signal_default_time, y_interpolated)
 
@@ -187,13 +201,9 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     fig2.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
     # Difference between original and reconstructed signal
-    fig3 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
-    fig3['data'][0]['showlegend'] = True
-    fig3['data'][0]['name'] = ' Samples '
-    fig3.add_scatter(name="Reconstructed",x=signal_default_time, y=y_interpolated,line_color="#FF4B4B")
-    fig3.update_traces(marker={'size': 10}, line_color="#FF4B4B")
-    fig3.add_scatter(name="Original_Signal",x =signal_default_time,y =Final_signal_sum, line_color='blue' )
-    fig3.update_traces(marker={'size': 10})
+    fig3 = px.scatter(x =signal_default_time,y =Final_signal_sum - y_interpolated, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
+    fig3.add_scatter(name="Difference", x =signal_default_time,y =Final_signal_sum - y_interpolated,line_color='Green')
+    fig3.update_traces(marker={'size': 1.5})
     fig3.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
     fig3.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
     fig3.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
@@ -244,7 +254,7 @@ def removeSignalFromList(amplitude, frequency, phase):
 
 def sinGeneration(amplitude, Freq, phase):
     global generate_sine_signal
-    generate_sine_signal=np.sin(2*np.pi*(signal_default_time*Freq)+phase*np.pi)*amplitude
+    generate_sine_signal=np.cos(2*np.pi*(signal_default_time*Freq)+phase*np.pi)*amplitude
     
 
 
@@ -313,15 +323,12 @@ def calculate_max_freq_uploadedfile(signal_amp,signal_time):
 
 def download_final_signal(data_frame) :
     csv = data_frame.to_csv(index=False)   #convert pandas df to a csv string and removes indexing
-    b64 = base64.b64encode(csv.encode()).decode() 
+    b64 = base64.b64encode(csv.encode()).decode() # decode to string
     """
     Base64-encoded version of csv string
      This is done by first encoding the csv string into bytes using the .encode() method, then using the b64encode() function from the base64 module to encode those bytes as Base64.
-
 The resulting Base64-encoded string is then decoded using the decode() method to get a regular string.
-
 This encoding and decoding is necessary for creating a URL-safe representation of the csv data, which can then be used in the href attribute of the download link.
-
     """
     
     file_name = 'Downloaded_signal.csv'
@@ -329,5 +336,4 @@ This encoding and decoding is necessary for creating a URL-safe representation o
     download_button_str = f'<a href="{data}" download={file_name}>Download CSV File</a>' #html string for the download button
     st.markdown(download_button_str, unsafe_allow_html = True) #display button in app
    #The unsafe_allow_html=True argument is needed because the download_button_str variable contains HTML code.
-     
-    
+   
