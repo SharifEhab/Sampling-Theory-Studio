@@ -15,7 +15,7 @@ def read_csv_file(file):
         return data
     else:
         return None
-
+    
 #_____Variables_____#
 dropdown_signal_list = []
 file_signal_amplitude = None
