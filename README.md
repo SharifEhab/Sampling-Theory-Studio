@@ -12,3 +12,20 @@
 
 ![programming language](https://img.shields.io/badge/programmig%20language-Python-red)
 ![Framework](https://img.shields.io/badge/Framework-Streamlit-blue)
+
+## Deployment
+
+ Install streamlit
+
+```bash
+  pip install streamlit
+```
+Install used modules
+
+```bash
+requirements-txt init
+```
+To start deployment 
+```bash
+  streamlit run streamlit_app.py
+```
