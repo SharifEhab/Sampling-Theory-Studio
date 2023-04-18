@@ -7,3 +7,8 @@
 - [Design](#Design)
 - [Features](#Features)
 - [Authors](#Authors)
+
+## Built with
+
+![programming language](https://img.shields.io/badge/programmig%20language-Python-red)
+![Framework](https://img.shields.io/badge/Framework-Streamlit-blue)
