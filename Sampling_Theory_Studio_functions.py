@@ -101,6 +101,7 @@ def generateFinalSignal(noise_flag,signal_uploaded_browser,SNR=40):
 
 
 def interpolate(time_new, signal_time, signal_amplitude):
+
     """
         Sinc Interpolation
         Parameters
@@ -123,7 +124,7 @@ def interpolate(time_new, signal_time, signal_amplitude):
 
 
     # sincM is a 2D matrix of shape (len(signal_time), len(time_new))
-
+    
     # By subtracting the sampled time points from the interpolated time points
     
     sincMatrix = np.tile(time_new, (len(signal_time), 1)) - np.tile(signal_time[:, np.newaxis], (1, len(time_new)))
@@ -132,7 +133,7 @@ def interpolate(time_new, signal_time, signal_amplitude):
     
     #This dot product results in a new set of amplitude values that approximate the original signal at the interpolated time points.
     signal_interpolated = np.dot(signal_amplitude, np.sinc(sincMatrix/(signal_time[1] - signal_time[0])))   
-    return signal_interpolated              
+    return signal_interpolated
 
 
 
@@ -189,7 +190,7 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     fig1.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
     fig1.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
     fig1.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
-
+    
     # Reconstructed signal along with sampling points/markers
     fig2 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
     fig2['data'][0]['showlegend'] = True
@@ -313,6 +314,7 @@ def calculate_max_freq_uploadedfile(signal_amp,signal_time):
     n = len(signal_time)  # Get number of samples in signal amp array
     Fs = 1 / (signal_time[1] - signal_time[0]) #sampling frequency
     signal_freq = fft(signal_amp) / n  #Apply FFT to sig_amp results in array of complex values representing amplitude and phase of each component 
+    #which is likely imported from a library (e.g., NumPy or SciPy). The result is an array of complex values representing the amplitude and phase of each frequency component in the signal. The array is then divided by n to normalize the amplitudes.
     freqs = np.linspace(0, Fs / 2, n // 2)  #array of frequencies based on Fs 
     max_freq_index = np.argmax(np.abs(signal_freq[:n//2]))  #get index of highest magnitude in frequency components
     max_freq = freqs[max_freq_index]  #Get the frequency corresponding to greatest magnitude
@@ -321,14 +323,17 @@ def calculate_max_freq_uploadedfile(signal_amp,signal_time):
 
 
 
-def download_final_signal(data_frame) :
+def download_final_signal(data_frame):
     csv = data_frame.to_csv(index=False)   #convert pandas df to a csv string and removes indexing
-    b64 = base64.b64encode(csv.encode()).decode() # decode to string
+    b64 = base64.b64encode(csv.encode()).decode()
     """
     Base64-encoded version of csv string
      This is done by first encoding the csv string into bytes using the .encode() method, then using the b64encode() function from the base64 module to encode those bytes as Base64.
+
 The resulting Base64-encoded string is then decoded using the decode() method to get a regular string.
+
 This encoding and decoding is necessary for creating a URL-safe representation of the csv data, which can then be used in the href attribute of the download link.
+
     """
     
     file_name = 'Downloaded_signal.csv'
@@ -336,4 +341,5 @@ This encoding and decoding is necessary for creating a URL-safe representation o
     download_button_str = f'<a href="{data}" download={file_name}>Download CSV File</a>' #html string for the download button
     st.markdown(download_button_str, unsafe_allow_html = True) #display button in app
    #The unsafe_allow_html=True argument is needed because the download_button_str variable contains HTML code.
-   
+     
+    

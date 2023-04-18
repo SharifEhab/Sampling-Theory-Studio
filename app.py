@@ -1,10 +1,11 @@
-import streamlit as st
-import pandas as pd
-import numpy as np 
-import Sampling_Theory_Studio_functions as functions 
-from math import ceil
-import csv 
-import random
+# Import the necessary libraries
+import streamlit as st # Streamlit library for creating web-based data applications [1]
+import pandas as pd # Pandas library for data manipulation and analysis [1]
+import numpy as np # NumPy library for working with arrays and numerical computations [1]
+import Sampling_Theory_Studio_functions as functions # Custom module for sampling theory studio (add comments with function details) 
+from math import ceil # ceil function from math module for rounding up to the nearest integer
+import csv # CSV module for working with CSV files
+import random # Random module for generating random numbers
 st.set_page_config(page_title="Sample", page_icon=":radio:", layout="wide")
 
 # ____ Elements styling ____ #
@@ -24,8 +25,6 @@ def read_csv_file(file):
 dropdown_signal_list = []
 file_signal_amplitude = None
 
-
-
 # SIDEBAR SECTION
 with st.sidebar:
     st.markdown('<h1 class="sidebar-title">Manage Signals</h1>', unsafe_allow_html=True)
@@ -35,7 +34,6 @@ with st.sidebar:
         file_signal_amplitude =np.asarray( signal['Amplitude'])
         file_signal_time = np.asarray(signal['Time'])
         max_frequency = functions.calculate_max_freq_uploadedfile(file_signal_amplitude,file_signal_time)
-        #Fs =float(1/(file_signal_time[1]-file_signal_time[0]) )  #get the sampling frequency considering the time samples are equidistant
         functions.signal_set_time(file_signal_time,max_frequency*2)
     else:
         functions.Reintialize_values()
@@ -116,7 +114,7 @@ with st.container():
         
     else:    
     
-        st.title("Task 2 – Sampling-Theory Studio")
+        st.title("Sampling-Theory Studio")
         functions.sinGeneration(amplitude_slider,frequency_slider,phase_slider)  # sine wave random 
         functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level)
         fig1,fig2,fig3,reconstructed_signal = functions.renderSampledSignal(sample_rate,is_normalized)
@@ -124,3 +122,4 @@ with st.container():
         st.plotly_chart(fig1,use_container_width=True)
         st.plotly_chart(fig2,use_container_width=True)
         st.plotly_chart(fig3,use_container_width=True)
+
