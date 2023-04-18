@@ -8,11 +8,6 @@ import csv # CSV module for working with CSV files
 import random # Random module for generating random numbers
 st.set_page_config(page_title="Sample", page_icon=":radio:", layout="wide")
 
-# ____ Elements styling ____ #
-
-with open('style.css') as f:
-    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-
 # Define a function to upload a CSV file and return its content as a Pandas DataFrame
 def read_csv_file(file):
     if file is not None:
