@@ -6,6 +6,7 @@
 - [Deployment](#Deployment)
 - [Design](#Design)
 - [Features](#Features)
+- [Authors](#Authors)
 
 ## Built with
 
