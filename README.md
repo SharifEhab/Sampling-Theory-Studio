@@ -6,7 +6,6 @@
 - [Deployment](#Deployment)
 - [Design](#Design)
 - [Features](#Features)
-- [Authors](#Authors)
 
 ## Built with
 
@@ -45,18 +44,4 @@ To start deployment
 ![Add noise](./images/Noise_0.png)
 ![Add noise](./images/Noise_1.png)
 
-## 🔗 Authors
-- Omar Adel Hassan
--  [@Omar_Adel](https://github.com/omar-adel1)
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/omar-adel-59b707231/)
 
-- Sherif Ehab
-- [@Sherif_Ehab](https://github.com/SharifEhab)
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sharif-elmasry-b167a3252/)
-
-- Mostafa Khaled
-- [@Mostafa_Khaled](https://github.com/MostafaDarwish93) [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mostafa-darwish-75a29225b/)
-
-- Zyad Sowalim
-- [@Zyad_Sowalim](https://github.com/Zyadsowilam)
-[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/zyad-sowilam-798209228/)
