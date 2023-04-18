@@ -34,3 +34,10 @@ To start deployment
 ![main widow](./images/sampling_1.png)
 ![main widow](./images/sampling_2.png)
 ![main widow](./images/sampling_3.png)
+
+## Features
+* **Sampling**
+![main widow](./images/Features_0.png)
+![main widow](./images/Features_1.png)
+![main widow](./images/Features_2.png)
+
