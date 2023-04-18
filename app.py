@@ -110,7 +110,7 @@ with st.container():
     else:    
     
         st.title("Sampling-Theory Studio")
-        functions.sinGeneration(amplitude_slider,frequency_slider,phase_slider)  # sine wave random 
+        functions.cosGeneration(amplitude_slider,frequency_slider,phase_slider)  # sine wave random 
         functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level)
         fig1,fig2,fig3,reconstructed_signal = functions.renderSampledSignal(sample_rate,is_normalized)
         

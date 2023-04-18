@@ -49,7 +49,7 @@ def generate_noisy_signal(snr_level):
      
     
     # Generate the signal
-   # time = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+    # time = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
     
     
     # Calculate the power of the signal
@@ -155,25 +155,11 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     
     
     if is_normalized_freq:
-
-        
-       time  = np.arange(0, signal_default_time[-1], 1/(nyquist_rate * max_frequency))
-    #    if nyquist_rate == 2:
-    #         tar=time.copy() 
-    #         for i in range(1, len(time)):
-    #             time[i]=tar[i]-((tar[i]-tar[i-1])/2)
-
-                
+       time  = np.arange(0, signal_default_time[-1], 1/(nyquist_rate * max_frequency))         
     else:
         time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate))
-        # if nyquist_rate == 2*max_frequency: 
-        #     tar=time.copy() 
-        #     for i in range(1, len(time)):
-        #         time[i]=tar[i]-((tar[i]-tar[i-1])/2)
 
 
-
-    
     # points on graph  , 20 , amp of sample 
     y_samples = interpolate(time, signal_default_time, Final_signal_sum )  #sampling/samples taken with input sampling frequency
 
@@ -253,7 +239,7 @@ def removeSignalFromList(amplitude, frequency, phase):
         SetmaxFreq()
 
 
-def sinGeneration(amplitude, Freq, phase):
+def cosGeneration(amplitude, Freq, phase):
     global generate_sine_signal
     generate_sine_signal=np.cos(2*np.pi*(signal_default_time*Freq)+phase*np.pi)*amplitude
     
