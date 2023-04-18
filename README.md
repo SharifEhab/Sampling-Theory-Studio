@@ -29,3 +29,5 @@ To start deployment
 ```bash
   streamlit run streamlit_app.py
 ```
+## 🖌️ Design
+![main widow](./images/sampling_0.png)
