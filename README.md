@@ -31,3 +31,6 @@ To start deployment
 ```
 ## 🖌️ Design
 ![main widow](./images/sampling_0.png)
+![main widow](./images/sampling_1.png)
+![main widow](./images/sampling_2.png)
+![main widow](./images/sampling_3.png)
