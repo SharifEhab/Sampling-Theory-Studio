@@ -158,19 +158,11 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
 
         
        time  = np.arange(0, signal_default_time[-1], 1/(nyquist_rate * max_frequency))
-    #    if nyquist_rate == 2:
-    #         tar=time.copy() 
-    #         for i in range(1, len(time)):
-    #             time[i]=tar[i]-((tar[i]-tar[i-1])/2)
-
+ 
                 
     else:
         time = np.arange(0, signal_default_time[-1], 1/(nyquist_rate))
-        # if nyquist_rate == 2*max_frequency: 
-        #     tar=time.copy() 
-        #     for i in range(1, len(time)):
-        #         time[i]=tar[i]-((tar[i]-tar[i-1])/2)
-
+       
 
 
     
