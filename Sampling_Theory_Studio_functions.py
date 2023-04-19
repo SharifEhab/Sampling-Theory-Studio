@@ -8,7 +8,7 @@ from scipy.fftpack import fft
 
 
 #___Initializing variables__#
-signal_default_time = np.arange(0,1,0.001)    #1000 default samples for the time axis   
+signal_default_time = np.arange(0,4,0.001)    #1000 default samples for the time axis   
 
 
 signal_default_values = np.zeros(len(signal_default_time))    
@@ -270,7 +270,7 @@ def get_snr_level():
 
 def Reintialize_values():
     global signal_default_time, max_frequency
-    signal_default_time = np.arange(0,1,0.001)    #1000 default samples for the time axis   
+    signal_default_time = np.arange(0,4,0.001)    #1000 default samples for the time axis   
     max_frequency = 1
     
     for signals in  total_signals_list : 

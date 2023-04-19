@@ -51,7 +51,7 @@ with st.sidebar:
     with phase_slider_col:
         phase_slider = st.slider('Phase', 0.0, 2.0, 0.0, 0.1, format="%fπ")
     
-    frequency_slider = st.slider("Frequency", 1.0, 20.0, 10.0, 0.1, format="%f")
+    frequency_slider = st.slider("Frequency", 1.0, 50.0, 10.0, 0.1, format="%f")
 
     AddSignalButton=st.button("Add Signal",key="addbutton")
     
@@ -103,18 +103,14 @@ with st.sidebar:
     functions.download_final_signal(functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level))
     
     
-with st.container():
-    if len(functions.get_Total_signal_list()) == 0 and file is  None:
-        st.title("Please upload signal or add using the signal mixer")
-        
-    else:    
+with st.container():  
     
         st.title("Sampling-Theory Studio")
         functions.cosGeneration(amplitude_slider,frequency_slider,phase_slider)  # sine wave random 
         functions.generateFinalSignal(add_noise,file_signal_amplitude,noise_level)
-        fig1,fig2,fig3,reconstructed_signal = functions.renderSampledSignal(sample_rate,is_normalized)
+        Original_fig,reconstructed_fig,Difference_fig = functions.renderSampledSignal(sample_rate,is_normalized)
         
-        st.plotly_chart(fig1,use_container_width=True)
-        st.plotly_chart(fig2,use_container_width=True)
-        st.plotly_chart(fig3,use_container_width=True)
+        st.plotly_chart(Original_fig,use_container_width=True)
+        st.plotly_chart(reconstructed_fig,use_container_width=True)
+        st.plotly_chart(Difference_fig,use_container_width=True)
 
