@@ -8,7 +8,7 @@ from scipy.fftpack import fft
 
 
 #___Initializing variables__#
-signal_default_time = np.arange(0,1,0.001)    #1000 default samples for the time axis   
+signal_default_time = np.arange(0,4,0.001)    #1000 default samples for the time axis   
 
 
 signal_default_values = np.zeros(len(signal_default_time))    
@@ -168,34 +168,35 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     df = pd.DataFrame(signal_default_time, y_interpolated)
 
  # Original signal with markers for sampled points
-    fig1 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
-    fig1['data'][0]['showlegend'] = True
-    fig1['data'][0]['name'] = ' Samples '
-    fig1.add_scatter(name="Original_Signal", x=signal_default_time, y=Final_signal_sum,line_color = 'blue' )
-    fig1.update_traces(marker={'size': 10})
-    fig1.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
-    fig1.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
-    fig1.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    original_signal = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
+    original_signal['data'][0]['showlegend'] = True
+    original_signal['data'][0]['name'] = ' Samples '
+    original_signal.add_scatter(name="Original_Signal", x=signal_default_time, y=Final_signal_sum,line_color = 'blue' )
+    original_signal.update_traces(marker={'size': 10})
+    original_signal.update_layout( showlegend=True, margin=dict(l=50, r=50, t=50, b=50), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01), height=330) 
+    original_signal.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    original_signal.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
     
     # Reconstructed signal along with sampling points/markers
-    fig2 = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
-    fig2['data'][0]['showlegend'] = True
-    fig2['data'][0]['name'] = ' Samples '
-    fig2.add_scatter(name="Reconstructed",x=signal_default_time, y=y_interpolated,  line_color="#FF4B4B")
-    fig2.update_traces(marker={'size': 10}, line_color="#FF4B4B")
-    fig2.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
-    fig2.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
-    fig2.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    constructed_signal = px.scatter(x=time, y=y_samples , labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
+    constructed_signal['data'][0]['showlegend'] = True
+    constructed_signal['data'][0]['name'] = ' Samples '
+    constructed_signal.add_scatter(name="Reconstructed",x=signal_default_time, y=y_interpolated,  line_color="#FF4B4B")
+    constructed_signal.update_traces(marker={'size': 10}, line_color="#FF4B4B")
+    constructed_signal.update_layout( showlegend=True, margin=dict(l=50, r=50, t=25, b=50), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01), height=330)  
+    constructed_signal.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    constructed_signal.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
     # Difference between original and reconstructed signal
-    fig3 = px.scatter(x =signal_default_time,y =Final_signal_sum - y_interpolated, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
-    fig3.add_scatter(name="Difference", x =signal_default_time,y =Final_signal_sum - y_interpolated,line_color='Green')
-    fig3.update_traces(marker={'size': 1.5})
-    fig3.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01))
-    fig3.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
-    fig3.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    difference_signal = px.scatter(x =signal_default_time,y =Final_signal_sum - y_interpolated, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
+    difference_signal.add_scatter(name="Difference", x =signal_default_time,y =Final_signal_sum - y_interpolated,line_color='Green')
+    difference_signal.update_traces(marker={'size': 1.5})
+    difference_signal.update_layout( showlegend=True, margin=dict(l=50, r=50, t=25
+                                                                  , b=50), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01), height=330)  
+    difference_signal.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
+    difference_signal.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
-    return fig1, fig2, fig3,df.drop(df.columns[[0]], axis=1)  # returns 3 figs along with interpolated signal values where each row corresponds to interpolated signal value at specific time point.
+    return original_signal, constructed_signal, difference_signal,df.drop(df.columns[[0]], axis=1)  # returns 3 figs along with interpolated signal values where each row corresponds to interpolated signal value at specific time point.
 
 
 
@@ -270,7 +271,7 @@ def get_snr_level():
 
 def Reintialize_values():
     global signal_default_time, max_frequency
-    signal_default_time = np.arange(0,1,0.001)    #1000 default samples for the time axis   
+    signal_default_time = np.arange(0,4,0.001)       
     max_frequency = 1
     
     for signals in  total_signals_list : 
