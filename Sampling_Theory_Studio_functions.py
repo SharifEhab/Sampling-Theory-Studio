@@ -8,7 +8,7 @@ from scipy.fftpack import fft
 
 
 #___Initializing variables__#
-signal_default_time = np.arange(0,4,0.001)    #1000 default samples for the time axis   
+signal_default_time = np.arange(0,4,0.001)    #4000 default samples for the time axis   
 
 
 signal_default_values = np.zeros(len(signal_default_time))    
@@ -21,7 +21,7 @@ total_signals_list = [Signal(amplitude=1,frequency=1,phase=0)]  #contains all in
 
 signals_uploaded_list = []
 
-generate_sine_signal =  None
+generate_cose_signal =  None
 
 snr_value = 50       
 
@@ -188,7 +188,7 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     constructed_signal.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
     # Difference between original and reconstructed signal
-    difference_signal = px.scatter(x =signal_default_time,y =Final_signal_sum - y_interpolated, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
+    difference_signal = px.scatter(x =signal_default_time,y =Final_signal_sum - y_interpolated, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['Green'])
     difference_signal.add_scatter(name="Difference", x =signal_default_time,y =Final_signal_sum - y_interpolated,line_color='Green')
     difference_signal.update_traces(marker={'size': 1.5})
     difference_signal.update_layout( showlegend=True, margin=dict(l=50, r=50, t=25, b=50), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01), height=330)  
@@ -240,8 +240,8 @@ def removeSignalFromList(amplitude, frequency, phase):
 
 
 def cosGeneration(amplitude, Freq, phase):
-    global generate_sine_signal
-    generate_sine_signal=np.cos(2*np.pi*(signal_default_time*Freq)+phase*np.pi)*amplitude
+    global generate_cose_signal
+    generate_cose_signal=np.cos(2*np.pi*(signal_default_time*Freq)+phase*np.pi)*amplitude
     
 
 
