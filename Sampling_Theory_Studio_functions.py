@@ -191,8 +191,7 @@ def renderSampledSignal(nyquist_rate, is_normalized_freq):
     difference_signal = px.scatter(x =signal_default_time,y =Final_signal_sum - y_interpolated, labels={"x": "Time (s)", "y": "Amplitude (mv)"}, color_discrete_sequence=['red'])
     difference_signal.add_scatter(name="Difference", x =signal_default_time,y =Final_signal_sum - y_interpolated,line_color='Green')
     difference_signal.update_traces(marker={'size': 1.5})
-    difference_signal.update_layout( showlegend=True, margin=dict(l=50, r=50, t=25
-                                                                  , b=50), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01), height=330)  
+    difference_signal.update_layout( showlegend=True, margin=dict(l=50, r=50, t=25, b=50), legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01), height=330)  
     difference_signal.update_xaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
     difference_signal.update_yaxes(showline=True, linewidth=2, linecolor='black', gridcolor='#5E5E5E', title_font=dict(size=24, family='Arial'))
 
