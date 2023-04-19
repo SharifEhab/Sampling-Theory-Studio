@@ -312,6 +312,9 @@ def calculate_max_freq_uploadedfile(signal_amp,signal_time):
 def download_final_signal(data_frame):
     csv = data_frame.to_csv(index=False)   #convert pandas df to a csv string and removes indexing
     b64 = base64.b64encode(csv.encode()).decode()
+    #csv.encode(): This is a method in Python that encodes the string csv into bytes using the default encoding (usually UTF-8).
+    #base64.b64encode(csv.encode()): This is a function from the base64 module that takes the encoded bytes
+    # and encodes them using the Base64 algorithm, which converts binary data into ASCII characters for safe transport over text protocols, such as email or HTTP.
     """
     Base64-encoded version of csv string
      This is done by first encoding the csv string into bytes using the .encode() method, then using the b64encode() function from the base64 module to encode those bytes as Base64.
