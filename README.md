@@ -30,16 +30,13 @@ To start deployment
   streamlit run streamlit_app.py
 ```
 ## 🖌️ Design
-![main widow](./images/sampling_0.png)
-![main widow](./images/sampling_1.png)
-![main widow](./images/sampling_2.png)
-![main widow](./images/sampling_3.png)
+![main widow](./images/Sampling_0.png)
+![main widow](./images/Sampling_1.png)
 
 ## Features
 * **Sampling**
 ![main widow](./images/Features_0.png)
 ![main widow](./images/Features_1.png)
-![main widow](./images/Features_2.png)
 
 * **Add noise**
 ![Add noise](./images/Noise_0.png)
