@@ -29,7 +29,7 @@ To start deployment
 ```bash
   streamlit run streamlit_app.py
 ```
-## 🖌️ Design
+## Design
 ![main widow](./images/Sampling_0.png)
 ![main widow](./images/Sampling_1.png)
 
@@ -43,7 +43,7 @@ To start deployment
 ![Add noise](./images/Noise_1.png)
 
 
-## 🔗 Authors
+## Authors
 - Omar Adel Hassan
 -  [@Omar_Adel](https://github.com/omar-adel1)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/omar-adel-59b707231/)
