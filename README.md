@@ -59,3 +59,10 @@ To start deployment
 - Zyad Sowalim
 - [@Zyad_Sowalim](https://github.com/Zyadsowilam)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/zyad-sowilam-798209228/)
+
+## Acknowledgements
+
+Submitted to: Dr. Tamer Basha & Eng. Christina Adly
+
+All rights reserved © 2023 to Team 4 - HealthCare Engineering and Management, Cairo University (Class 2025)
+
